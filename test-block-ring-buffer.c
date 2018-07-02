@@ -54,10 +54,9 @@ main (int argc, char *argv[])
   const uint32_t buffer_size = 5;
   const uint32_t block_size = 9;
 
-  ua_block_ring_buffer_t rf = ua_block_ring_buffer_new (buffer_size,
-                                                        block_size);
-  printf ("buf settings: size: %u, bleng: %u\n\n", buffer_size,
-          block_size);
+  block_ring_buffer_t rf = block_ring_buffer_new (buffer_size,
+						  block_size);
+  printf ("buf settings: size: %u, bleng: %u\n\n", buffer_size, block_size);
 
   char rfMonitor[50];
   memset (rfMonitor, '\0', 50);
@@ -65,128 +64,127 @@ main (int argc, char *argv[])
   uint32_t writed = 0;
 
   /* case 1 */
-  ua_block_ring_buffer_write (rf, a, 1);
+  block_ring_buffer_write (rf, a, 1);
   writed++;
-  ua_block_ring_buffer_read_last (rf, result);
+  block_ring_buffer_read_last (rf, result);
   printf ("a in, read_last: %s\n", result);
   memset (rfMonitor, '\0', 50);
-  ua_block_ring_buffer_dump (rf, rfMonitor);
+  block_ring_buffer_dump (rf, rfMonitor);
   printf ("buffer state: length=%u, data:%s\n", writed, rfMonitor);
 
-  ua_block_ring_buffer_write (rf, b, 1);
+  block_ring_buffer_write (rf, b, 1);
   writed++;
-  ua_block_ring_buffer_read_last (rf, result);
+  block_ring_buffer_read_last (rf, result);
   printf ("b in, read_last: %s\n", result);
   memset (rfMonitor, '\0', 50);
-  ua_block_ring_buffer_dump (rf, rfMonitor);
+  block_ring_buffer_dump (rf, rfMonitor);
   printf ("buffer state: length=%u, data:%s\n", writed, rfMonitor);
 
-  ua_block_ring_buffer_write (rf, c, 1);
+  block_ring_buffer_write (rf, c, 1);
   writed++;
-  ua_block_ring_buffer_read_last (rf, result);
+  block_ring_buffer_read_last (rf, result);
   printf ("c in, read_last: %s\n", result);
   memset (rfMonitor, '\0', 50);
-  ua_block_ring_buffer_dump (rf, rfMonitor);
+  block_ring_buffer_dump (rf, rfMonitor);
   printf ("buffer state: length=%u, data:%s\n", writed, rfMonitor);
 
-  ua_block_ring_buffer_write (rf, d, 1);
+  block_ring_buffer_write (rf, d, 1);
   writed++;
-  ua_block_ring_buffer_read_last (rf, result);
+  block_ring_buffer_read_last (rf, result);
   printf ("d in, read_last: %s\n", result);
   memset (rfMonitor, '\0', 50);
-  ua_block_ring_buffer_dump (rf, rfMonitor);
+  block_ring_buffer_dump (rf, rfMonitor);
   printf ("buffer state: length=%u, data:%s\n", writed, rfMonitor);
 
-  ua_block_ring_buffer_write (rf, e, 1);
+  block_ring_buffer_write (rf, e, 1);
   writed++;
-  ua_block_ring_buffer_read_last (rf, result);
+  block_ring_buffer_read_last (rf, result);
   printf ("e in, read_last: %s\n", result);
   memset (rfMonitor, '\0', 50);
-  ua_block_ring_buffer_dump (rf, rfMonitor);
+  block_ring_buffer_dump (rf, rfMonitor);
   printf ("buffer state: length=%u, data:%s\n", writed, rfMonitor);
 
-  ua_block_ring_buffer_write (rf, f, 1);
+  block_ring_buffer_write (rf, f, 1);
   writed++;
-  ua_block_ring_buffer_read_last (rf, result);
+  block_ring_buffer_read_last (rf, result);
   printf ("f in, read_last: %s\n", result);
   memset (rfMonitor, '\0', 50);
-  ua_block_ring_buffer_dump (rf, rfMonitor);
+  block_ring_buffer_dump (rf, rfMonitor);
   printf ("buffer state: length=%u, data:%s\n", writed, rfMonitor);
 
-  ua_block_ring_buffer_clear (rf);
+  block_ring_buffer_clear (rf);
   writed = 0;
   printf ("clear \n\n");
 
   /* case 2 */
-  ua_block_ring_buffer_write (rf, abc, 3);
+  block_ring_buffer_write (rf, abc, 3);
   writed += 3;
-  ua_block_ring_buffer_read_last (rf, result);
+  block_ring_buffer_read_last (rf, result);
   printf ("'abc' in, read_last: %s\n", result);
   memset (rfMonitor, '\0', 50);
-  ua_block_ring_buffer_dump (rf, rfMonitor);
+  block_ring_buffer_dump (rf, rfMonitor);
   printf ("buffer state: length=%u, data:%s\n", writed, rfMonitor);
 
-  ua_block_ring_buffer_write (rf, def, 3);
+  block_ring_buffer_write (rf, def, 3);
   writed += 3;
-  ua_block_ring_buffer_read_last (rf, result);
+  block_ring_buffer_read_last (rf, result);
   printf ("'def' in, read_last: %s\n", result);
   memset (rfMonitor, '\0', 50);
-  ua_block_ring_buffer_dump (rf, rfMonitor);
+  block_ring_buffer_dump (rf, rfMonitor);
   printf ("buffer state: length=%u, data:%s\n", writed, rfMonitor);
 
-  ua_block_ring_buffer_clear (rf);
+  block_ring_buffer_clear (rf);
   writed += 3;
   printf ("clear \n\n");
 
   /* case 3 */
-  ua_block_ring_buffer_write (rf, abcdef, 6);
+  block_ring_buffer_write (rf, abcdef, 6);
   writed += 6;
-  ua_block_ring_buffer_read_last (rf, result);
+  block_ring_buffer_read_last (rf, result);
   printf ("'abcdef' in, read_last: %s\n", result);
   memset (rfMonitor, '\0', 50);
-  ua_block_ring_buffer_dump (rf, rfMonitor);
+  block_ring_buffer_dump (rf, rfMonitor);
   printf ("buffer state: length=%u, data:%s\n", writed, rfMonitor);
 
-  ua_block_ring_buffer_clear (rf);
+  block_ring_buffer_clear (rf);
   writed = 0;
   printf ("clear \n\n");
 
   /* case 4 */
-  ua_block_ring_buffer_write (rf, a, 1);
+  block_ring_buffer_write (rf, a, 1);
   writed += 1;
-  ua_block_ring_buffer_write (rf, abcdef, 6);
+  block_ring_buffer_write (rf, abcdef, 6);
   writed += 6;
-  ua_block_ring_buffer_read_last (rf, result);
+  block_ring_buffer_read_last (rf, result);
   printf ("'a + abcdef' in, read_last: %s\n", result);
   memset (rfMonitor, '\0', 50);
-  ua_block_ring_buffer_dump (rf, rfMonitor);
+  block_ring_buffer_dump (rf, rfMonitor);
   printf ("buffer state: length=%u, data:%s\n", writed, rfMonitor);
 
-  ua_block_ring_buffer_clear (rf);
+  block_ring_buffer_clear (rf);
   writed = 0;
   printf ("clear \n\n");
 
   /* case 5 */
-  ua_block_ring_buffer_write (rf, abcdef, 6);
+  block_ring_buffer_write (rf, abcdef, 6);
   writed += 6;
   printf ("'abcdef' in, query by index, last %u can be query out;\n\
            others at protect area or been overwited, can't read out\n",
-          buffer_size - (buffer_size *
-                         UA_BLOCK_RING_BUFFER_PROTECT_AREA_PERCENT / 100 + 1));
+          buffer_size - (buffer_size * BLOCK_RING_BUFFER_PROTECT_AREA_PERCENT / 100 + 1));
   memset (rfMonitor, '\0', 50);
-  ua_block_ring_buffer_dump (rf, rfMonitor);
+  block_ring_buffer_dump (rf, rfMonitor);
   printf ("buffer state: length=%u, data:%s\n", writed, rfMonitor);
 
   int rt;
   for (int i = 1; i <= writed; ++i)
     {
       result[0] = '\0';
-      rt = ua_block_ring_buffer_read (rf, result, i);
+      rt = block_ring_buffer_read (rf, result, i);
       printf ("read, index=%d : %s %s\n", i, (rt) ? "true : " : "false",
-              result);
+	      result);
     }
 
-  ua_block_ring_buffer_destory (rf);
+  block_ring_buffer_destory (rf);
 
   return 0;
 }

@@ -23,19 +23,19 @@ extern "C"
 {
 #endif
 
-  typedef struct _ua_mem_pool *ua_mem_pool_t;
+  typedef struct _mem_pool *mem_pool_t;
 
-  ua_mem_pool_t ua_mem_pool_new (uint32_t block_size, uint32_t blocks,
-                                 uint32_t min, uint32_t max);
-  void ua_mem_pool_destroy (ua_mem_pool_t p);
+  mem_pool_t mem_pool_new (uint32_t block_size, uint32_t blocks,
+                           uint32_t min, uint32_t max);
+  void mem_pool_destroy (mem_pool_t p);
 
-  void *ua_mem_pool_alloc (ua_mem_pool_t p, uint32_t * size);
-  void ua_mem_pool_free (ua_mem_pool_t p, void *t);
+  void *mem_pool_alloc (mem_pool_t p, uint32_t * size);
+  void mem_pool_free (mem_pool_t p, void *t);
 
-  int ua_mem_pool_is_empty (ua_mem_pool_t p);
+  int mem_pool_is_empty (mem_pool_t p);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif                          /* !__UA_MEM_POOL_H__ */
+#endif				/* !__UA_MEM_POOL_H__ */

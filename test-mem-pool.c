@@ -33,8 +33,8 @@ typedef struct
 static void
 test_pool (pool_test_case * tc)
 {
-  ua_mem_pool_t pool = ua_mem_pool_new (tc->block_size, tc->blocks,
-                                        tc->min, tc->max);
+  mem_pool_t pool = mem_pool_new (tc->block_size, tc->blocks,
+				  tc->min, tc->max);
 
   tc->passed = 1;
   void *alloced[tc->times];
@@ -43,20 +43,20 @@ test_pool (pool_test_case * tc)
   uint32_t size_got;
   for (int i = 0; i < tc->times; ++i)
     {
-      alloced[i] = ua_mem_pool_alloc (pool, &size_got);
+      alloced[i] = mem_pool_alloc (pool, &size_got);
       if (!alloced[i] || tc->block_size != size_got)
-        tc->passed = 0;
+	tc->passed = 0;
     }
 
   if (tc->passed)
     {
       for (int i = 0; i < tc->times; ++i)
-        ua_mem_pool_free (pool, alloced[i]);
+	mem_pool_free (pool, alloced[i]);
 
-      if (!ua_mem_pool_is_empty (pool))
-        tc->passed = 0;
+      if (!mem_pool_is_empty (pool))
+	tc->passed = 0;
     }
-  ua_mem_pool_destroy (pool);
+  mem_pool_destroy (pool);
 }
 
 static inline void

@@ -18,6 +18,11 @@
 
 #include <stdint.h>
 
+/*
+ * default not with mutex(pmutex),
+ * if need it, define CA_STATE_MACHINE_WITH_MUTEX
+ */
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -30,27 +35,26 @@ extern "C"
     UA_STATE_READY,		/* memory allocatd */
     UA_STATE_PAUSED,		/* pasue source */
     UA_STATE_RUNNING,
-    _ua_state_num_,
-  } ua_state;
+    _state_num_,
+  } state_e;
 
-  typedef struct _ua_state_machine *ua_state_machine_t;
+  typedef struct _state_machine *state_machine_t;
 
-  ua_state_machine_t ua_state_machine_new (void);
-  void ua_state_machine_destory (ua_state_machine_t sm);
+  state_machine_t state_machine_new (void);
+  void state_machine_destory (state_machine_t sm);
 
-  int ua_state_machine_regiest_func (ua_state_machine_t sm,
-				     int (*func) (void *para),
-				     void *para, ua_state from, ua_state to);
+  int state_machine_regiest_func (state_machine_t sm,
+				  int (*func) (void *para),
+                  void *para, state_e from, state_e to);
 
-  void ua_state_machine_regiest_name (ua_state_machine_t sm,
-				      ua_state st, const char *name);
+  void state_machine_regiest_name (state_machine_t sm,
+                   state_e st, const char *name);
 
-  int ua_state_machine_do_change (ua_state_machine_t sm,
-				  ua_state from, ua_state to);
+  int state_machine_do_change (state_machine_t sm, state_e from, state_e to);
 
-  const char *ua_state_machine_get_current (ua_state_machine_t sm);
+  const char *state_machine_get_current (state_machine_t sm);
 
-  int ua_state_machine_is_inited (ua_state_machine_t sm);
+  int state_machine_is_inited (state_machine_t sm);
 
 #ifdef __cplusplus
 }

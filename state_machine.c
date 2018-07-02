@@ -22,26 +22,25 @@
 #include <pthread.h>
 #endif
 
-typedef struct _ua_state_machine
+typedef struct _state_machine
 {
-  ua_state curr;
+  state_e curr;
   int inited;
 
-  const char *name[_ua_state_num_];
-  void *arr_func[(_ua_state_num_ - 1) * 2];
-  void *arr_para[(_ua_state_num_ - 1) * 2];
+  const char *name[_state_num_];
+  void *arr_func[(_state_num_ - 1) * 2];
+  void *arr_para[(_state_num_ - 1) * 2];
 
 #ifdef CA_STATE_MACHINE_WITH_MUTEX
   pthread_mutex_t *_pMutex;
   pthread_mutexattr_t *_pMutexAttr;
 #endif
-} _ua_state_machine;
+} _state_machine;
 
-_ua_state_machine *
-ua_state_machine_new (void)
+_state_machine *
+state_machine_new (void)
 {
-  _ua_state_machine *i =
-    (_ua_state_machine *) malloc (sizeof (_ua_state_machine));
+  _state_machine *i = (_state_machine *) malloc (sizeof (_state_machine));
   if (!i)
     return NULL;
 
@@ -66,10 +65,10 @@ ua_state_machine_new (void)
   pthread_mutex_init (i->_pMutex, i->_pMutexAttr);
 #endif
 
-  memset (i->name, 0x00, sizeof (char *) * (_ua_state_num_));
+  memset (i->name, 0x00, sizeof (char *) * (_state_num_));
 
-  memset (i->arr_func, 0x00, sizeof (void *) * (_ua_state_num_ - 1) * 2);
-  memset (i->arr_para, 0x00, sizeof (void *) * (_ua_state_num_ - 1) * 2);
+  memset (i->arr_func, 0x00, sizeof (void *) * (_state_num_ - 1) * 2);
+  memset (i->arr_para, 0x00, sizeof (void *) * (_state_num_ - 1) * 2);
 
   i->inited = 0;
   i->curr = 0;
@@ -78,7 +77,7 @@ ua_state_machine_new (void)
 }
 
 void
-ua_state_machine_destory (_ua_state_machine * sm)
+state_machine_destory (_state_machine * sm)
 {
 #ifdef CA_STATE_MACHINE_WITH_MUTEX
   pthread_mutex_destroy (sm->_pMutex);
@@ -89,22 +88,21 @@ ua_state_machine_destory (_ua_state_machine * sm)
 }
 
 void
-ua_state_machine_regiest_name (_ua_state_machine * sm, ua_state st,
-			       const char *name)
+state_machine_regiest_name (_state_machine * sm, state_e st, const char *name)
 {
-  if (st < _ua_state_num_)
+  if (st < _state_num_)
     sm->name[st] = name;
 }
 
 int
-ua_state_machine_regiest_func (_ua_state_machine * sm,
-			       int (*func) (void *para), void *para,
-			       ua_state from, ua_state to)
+state_machine_regiest_func (_state_machine * sm,
+			    int (*func) (void *para), void *para,
+                state_e from, state_e to)
 {
   assert (sm);
   assert (func);
 
-  if ((from == to) || from >= _ua_state_num_ || to >= _ua_state_num_)
+  if ((from == to) || from >= _state_num_ || to >= _state_num_)
     return 0;
 
   int dif = to - from;
@@ -127,19 +125,18 @@ ua_state_machine_regiest_func (_ua_state_machine * sm,
 }
 
 int
-ua_state_machine_do_change (_ua_state_machine * sm, ua_state from,
-			    ua_state to)
+state_machine_do_change (_state_machine * sm, state_e from, state_e to)
 {
   assert (sm);
 
-  if ((from == to) || from >= _ua_state_num_ || to >= _ua_state_num_)
+  if ((from == to) || from >= _state_num_ || to >= _state_num_)
     return 0;
 
   if (from != sm->curr)
     return 0;
 
   if (!sm->inited)
-    sm->inited = ua_state_machine_is_inited (sm);
+    sm->inited = state_machine_is_inited (sm);
   if (!sm->inited)
     return 0;
 
@@ -201,20 +198,20 @@ err:
 }
 
 const char *
-ua_state_machine_get_current (_ua_state_machine * sm)
+state_machine_get_current (_state_machine * sm)
 {
   assert (sm);
   return sm->name[sm->curr];
 }
 
 int
-ua_state_machine_is_inited (_ua_state_machine * sm)
+state_machine_is_inited (_state_machine * sm)
 {
   assert (sm);
   int i;
 
   /* name array */
-  for (i = 0; i < _ua_state_num_; ++i)
+  for (i = 0; i < _state_num_; ++i)
     {
       if (NULL == sm->name[i])
 	{
@@ -224,7 +221,7 @@ ua_state_machine_is_inited (_ua_state_machine * sm)
     }
 
   /* func array */
-  for (i = 0; i < (_ua_state_num_ - 1) * 2; ++i)
+  for (i = 0; i < (_state_num_ - 1) * 2; ++i)
     {
       if (NULL == sm->arr_func)
 	{

@@ -19,23 +19,23 @@
 #include <stdlib.h>
 #include <assert.h>
 
-typedef struct _ua_block_ring_buffer
+typedef struct _block_ring_buffer
 {
   char *body;
   volatile uint32_t n_write;
   uint32_t b_size;
   uint32_t b_count;
   uint32_t length;
-} _ua_block_ring_buffer;
+} _block_ring_buffer;
 
-_ua_block_ring_buffer *
-ua_block_ring_buffer_new (const uint32_t block_count, const uint32_t block_size)
+_block_ring_buffer *
+block_ring_buffer_new (const uint32_t block_count, const uint32_t block_size)
 {
   if (0 == block_count || 0 == block_size)
     return NULL;
 
-  _ua_block_ring_buffer *i =
-    (_ua_block_ring_buffer *) malloc (sizeof (_ua_block_ring_buffer));
+  _block_ring_buffer *i =
+    (_block_ring_buffer *) malloc (sizeof (_block_ring_buffer));
   if (!i)
     return NULL;
 
@@ -55,15 +55,14 @@ ua_block_ring_buffer_new (const uint32_t block_count, const uint32_t block_size)
 }
 
 void
-ua_block_ring_buffer_destory (_ua_block_ring_buffer * buf)
+block_ring_buffer_destory (_block_ring_buffer * buf)
 {
   free (buf->body);
   free (buf);
 }
 
 uint32_t
-ua_block_ring_buffer_write (_ua_block_ring_buffer * buf, char *block,
-			    uint32_t count)
+block_ring_buffer_write (_block_ring_buffer * buf, char *block, uint32_t count)
 {
   assert (buf);
   assert (buf->body);
@@ -87,7 +86,7 @@ ua_block_ring_buffer_write (_ua_block_ring_buffer * buf, char *block,
 
   uint32_t left;
   if (r_p == buf->body)
-      memcpy (r_p, r_pb, (sizeof (char) * buf->b_size * r_count));
+    memcpy (r_p, r_pb, (sizeof (char) * buf->b_size * r_count));
   else
     {
       if (r_count > 1 && (buf->n_write + bjump + r_count) > buf->b_count)
@@ -107,8 +106,8 @@ ua_block_ring_buffer_write (_ua_block_ring_buffer * buf, char *block,
 }
 
 int
-ua_block_ring_buffer_read (const ua_block_ring_buffer_t buf, char *block,
-			   const uint32_t index)
+block_ring_buffer_read (const block_ring_buffer_t buf, char *block,
+                        const uint32_t index)
 {
   assert (buf);
   assert (block);
@@ -121,7 +120,7 @@ ua_block_ring_buffer_read (const ua_block_ring_buffer_t buf, char *block,
     return 0;
 
   if ((last - index) >
-      (buf->b_count * UA_BLOCK_RING_BUFFER_PROTECT_AREA_PERCENT / 100 + 1))
+      (buf->b_count * BLOCK_RING_BUFFER_PROTECT_AREA_PERCENT / 100 + 1))
     return 0;
 
   char *p = buf->body + (((index - 1) % buf->b_count) * buf->b_size);
@@ -131,7 +130,7 @@ ua_block_ring_buffer_read (const ua_block_ring_buffer_t buf, char *block,
 }
 
 uint32_t
-ua_block_ring_buffer_read_last (const ua_block_ring_buffer_t buf, char *block)
+block_ring_buffer_read_last (const block_ring_buffer_t buf, char *block)
 {
   assert (buf);
   assert (block);
@@ -147,7 +146,7 @@ ua_block_ring_buffer_read_last (const ua_block_ring_buffer_t buf, char *block)
 }
 
 void
-ua_block_ring_buffer_clear (_ua_block_ring_buffer * buf)
+block_ring_buffer_clear (_block_ring_buffer * buf)
 {
   assert (buf);
 
@@ -156,7 +155,7 @@ ua_block_ring_buffer_clear (_ua_block_ring_buffer * buf)
 }
 
 uint32_t
-ua_block_ring_buffer_dump (_ua_block_ring_buffer * buf, char *t)
+block_ring_buffer_dump (_block_ring_buffer * buf, char *t)
 {
   assert (buf);
   assert (t);

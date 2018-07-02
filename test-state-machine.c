@@ -37,63 +37,63 @@ main (int argc, char *argv[])
   testContex_t ctx;
   strcpy (ctx.str, "iContext");
 
-  ua_state_machine_t staMachine = ua_state_machine_new ();
+  state_machine_t staMachine = state_machine_new ();
 
-  ua_state_machine_regiest_name (staMachine, UA_STATE_NULL, "NULL");
-  ua_state_machine_regiest_name (staMachine, UA_STATE_READY, "READY");
-  ua_state_machine_regiest_name (staMachine, UA_STATE_PAUSED, "PAUSED");
-  ua_state_machine_regiest_name (staMachine, UA_STATE_RUNNING, "RUNNING");
+  state_machine_regiest_name (staMachine, UA_STATE_NULL, "NULL");
+  state_machine_regiest_name (staMachine, UA_STATE_READY, "READY");
+  state_machine_regiest_name (staMachine, UA_STATE_PAUSED, "PAUSED");
+  state_machine_regiest_name (staMachine, UA_STATE_RUNNING, "RUNNING");
 
-  ua_state_machine_regiest_func (staMachine,
-				 _cb_state_null2ready, &ctx,
-				 UA_STATE_NULL, UA_STATE_READY);
-  ua_state_machine_regiest_func (staMachine,
-				 _cb_state_ready2null, &ctx,
-				 UA_STATE_READY, UA_STATE_NULL);
+  state_machine_regiest_func (staMachine,
+			      _cb_state_null2ready, &ctx,
+			      UA_STATE_NULL, UA_STATE_READY);
+  state_machine_regiest_func (staMachine,
+			      _cb_state_ready2null, &ctx,
+			      UA_STATE_READY, UA_STATE_NULL);
 
-  ua_state_machine_regiest_func (staMachine,
-				 _cb_state_ready2pause, &ctx,
-				 UA_STATE_READY, UA_STATE_PAUSED);
-  ua_state_machine_regiest_func (staMachine,
-				 _cb_state_pause2ready, &ctx,
-				 UA_STATE_PAUSED, UA_STATE_READY);
+  state_machine_regiest_func (staMachine,
+			      _cb_state_ready2pause, &ctx,
+			      UA_STATE_READY, UA_STATE_PAUSED);
+  state_machine_regiest_func (staMachine,
+			      _cb_state_pause2ready, &ctx,
+			      UA_STATE_PAUSED, UA_STATE_READY);
 
-  ua_state_machine_regiest_func (staMachine,
-				 _cb_state_pause2running, &ctx,
-				 UA_STATE_PAUSED, UA_STATE_RUNNING);
-  ua_state_machine_regiest_func (staMachine,
-				 _cb_state_running2pause, &ctx,
-				 UA_STATE_RUNNING, UA_STATE_PAUSED);
+  state_machine_regiest_func (staMachine,
+			      _cb_state_pause2running, &ctx,
+			      UA_STATE_PAUSED, UA_STATE_RUNNING);
+  state_machine_regiest_func (staMachine,
+			      _cb_state_running2pause, &ctx,
+			      UA_STATE_RUNNING, UA_STATE_PAUSED);
 
-  if (!ua_state_machine_is_inited (staMachine))
+  if (!state_machine_is_inited (staMachine))
     return -1;
 
   printf ("\nforword\n");
-  printf ("[S] : %s\n", ua_state_machine_get_current (staMachine));
-  ua_state_machine_do_change (staMachine, UA_STATE_NULL, UA_STATE_READY);
+  printf ("[S] : %s\n", state_machine_get_current (staMachine));
+  state_machine_do_change (staMachine, UA_STATE_NULL, UA_STATE_READY);
 
-  printf ("[S] : %s\n", ua_state_machine_get_current (staMachine));
-  ua_state_machine_do_change (staMachine, UA_STATE_READY, UA_STATE_PAUSED);
-  printf ("[S] : %s\n", ua_state_machine_get_current (staMachine));
-  ua_state_machine_do_change (staMachine, UA_STATE_PAUSED, UA_STATE_RUNNING);
-  printf ("[S] : %s\n", ua_state_machine_get_current (staMachine));
+  printf ("[S] : %s\n", state_machine_get_current (staMachine));
+  state_machine_do_change (staMachine, UA_STATE_READY, UA_STATE_PAUSED);
+  printf ("[S] : %s\n", state_machine_get_current (staMachine));
+  state_machine_do_change (staMachine, UA_STATE_PAUSED, UA_STATE_RUNNING);
+  printf ("[S] : %s\n", state_machine_get_current (staMachine));
 
   printf ("\nbackword\n");
-  ua_state_machine_do_change (staMachine, UA_STATE_RUNNING, UA_STATE_PAUSED);
-  printf ("[S] : %s\n", ua_state_machine_get_current (staMachine));
-  ua_state_machine_do_change (staMachine, UA_STATE_PAUSED, UA_STATE_READY);
-  printf ("[S] : %s\n", ua_state_machine_get_current (staMachine));
-  ua_state_machine_do_change (staMachine, UA_STATE_READY, UA_STATE_NULL);
-  printf ("[S] : %s\n", ua_state_machine_get_current (staMachine));
+  state_machine_do_change (staMachine, UA_STATE_RUNNING, UA_STATE_PAUSED);
+  printf ("[S] : %s\n", state_machine_get_current (staMachine));
+  state_machine_do_change (staMachine, UA_STATE_PAUSED, UA_STATE_READY);
+  printf ("[S] : %s\n", state_machine_get_current (staMachine));
+  state_machine_do_change (staMachine, UA_STATE_READY, UA_STATE_NULL);
+  printf ("[S] : %s\n", state_machine_get_current (staMachine));
 
   printf ("\njump\n");
-  printf ("[S] : %s\n", ua_state_machine_get_current (staMachine));
-  ua_state_machine_do_change (staMachine, UA_STATE_NULL, UA_STATE_RUNNING);
-  printf ("[S] : %s\n", ua_state_machine_get_current (staMachine));
-  ua_state_machine_do_change (staMachine, UA_STATE_RUNNING, UA_STATE_NULL);
-  printf ("[S] : %s\n", ua_state_machine_get_current (staMachine));
+  printf ("[S] : %s\n", state_machine_get_current (staMachine));
+  state_machine_do_change (staMachine, UA_STATE_NULL, UA_STATE_RUNNING);
+  printf ("[S] : %s\n", state_machine_get_current (staMachine));
+  state_machine_do_change (staMachine, UA_STATE_RUNNING, UA_STATE_NULL);
+  printf ("[S] : %s\n", state_machine_get_current (staMachine));
 
-  ua_state_machine_destory (staMachine);
+  state_machine_destory (staMachine);
   return 0;
 }
 

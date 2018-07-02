@@ -18,28 +18,28 @@
 #include <stdlib.h>
 #include <assert.h>
 
-typedef struct _ua_mem_pool_element
+typedef struct _mem_pool_element
 {
-  char **catalog;               /* catalog for blocks */
-  char *body;                   /* address */
+  char **catalog;		/* catalog for blocks */
+  char *body;			/* address */
   uint32_t count;
   uint32_t size;
-  struct _ua_mem_pool_element *next;
-} _ua_mem_pool_element;
+  struct _mem_pool_element *next;
+} _mem_pool_element;
 
-static _ua_mem_pool_element *
+static _mem_pool_element *
 _elem_new (uint32_t b_num, uint32_t b_size)
 {
   if (!b_num || !b_size)
     return NULL;
 
   uint32_t total =
-    sizeof (_ua_mem_pool_element) + b_num * (b_size + sizeof (char *));
-  _ua_mem_pool_element *i = (_ua_mem_pool_element *) malloc (total);
+    sizeof (_mem_pool_element) + b_num * (b_size + sizeof (char *));
+  _mem_pool_element *i = (_mem_pool_element *) malloc (total);
   if (!i)
     return NULL;
 
-  i->body = (char *) i + sizeof (_ua_mem_pool_element);
+  i->body = (char *) i + sizeof (_mem_pool_element);
   i->catalog = (char **) (i->body + b_num * b_size);
   i->count = b_num;
   i->size = b_size;
@@ -54,13 +54,13 @@ _elem_new (uint32_t b_num, uint32_t b_size)
 }
 
 static inline void
-_elem_destory (_ua_mem_pool_element * e)
+_elem_destory (_mem_pool_element * e)
 {
   free (e);
 }
 
 static void *
-_elem_alloc (_ua_mem_pool_element * e)
+_elem_alloc (_mem_pool_element * e)
 {
   assert (e);
 
@@ -69,11 +69,11 @@ _elem_alloc (_ua_mem_pool_element * e)
   while (j < e->count)
     {
       if (e->catalog[j])
-        {
-          i = e->catalog[j];
-          e->catalog[j] = NULL;
-          break;
-        }
+	{
+	  i = e->catalog[j];
+	  e->catalog[j] = NULL;
+	  break;
+	}
       j++;
     }
 
@@ -81,7 +81,7 @@ _elem_alloc (_ua_mem_pool_element * e)
 }
 
 static int
-_elem_free (_ua_mem_pool_element * e, char *t)
+_elem_free (_mem_pool_element * e, char *t)
 {
   assert (e);
 
@@ -98,10 +98,10 @@ _elem_free (_ua_mem_pool_element * e, char *t)
   while (i < e->count)
     {
       if (!e->catalog[i])
-        {
-          e->catalog[i] = t;
-          break;
-        }
+	{
+	  e->catalog[i] = t;
+	  break;
+	}
       i++;
     }
 
@@ -109,38 +109,37 @@ _elem_free (_ua_mem_pool_element * e, char *t)
 }
 
 static inline int
-_elem_is_empty (_ua_mem_pool_element * e)
+_elem_is_empty (_mem_pool_element * e)
 {
   assert (e);
 
   for (int i = 0; i < e->count; ++i)
     {
       if (!e->catalog[i])
-        return 0;
+	return 0;
     }
   return 1;
 }
 
-typedef struct _ua_mem_pool
+typedef struct _mem_pool
 {
-  uint32_t min_elements;        /* mininum number of blocks */
-  uint32_t max_elements;        /* maxinum number of blocks */
+  uint32_t min_elements;	/* mininum number of blocks */
+  uint32_t max_elements;	/* maxinum number of blocks */
 
-  uint32_t num_block;           /* num of blocks per element */
+  uint32_t num_block;		/* num of blocks per element */
   uint32_t block_size;
 
   int limit;
-  _ua_mem_pool_element *curr_e;
+  _mem_pool_element *curr_e;
 
-  uint32_t length;              /* length of element list */
-  _ua_mem_pool_element *start;
-} _ua_mem_pool;
+  uint32_t length;		/* length of element list */
+  _mem_pool_element *start;
+} _mem_pool;
 
-_ua_mem_pool *
-ua_mem_pool_new (uint32_t block_size, uint32_t blocks,
-                 uint32_t min, uint32_t max)
+_mem_pool *
+mem_pool_new (uint32_t block_size, uint32_t blocks, uint32_t min, uint32_t max)
 {
-  _ua_mem_pool *i = (_ua_mem_pool *) malloc (sizeof (_ua_mem_pool));
+  _mem_pool *i = (_mem_pool *) malloc (sizeof (_mem_pool));
   if (!i)
     return NULL;
 
@@ -163,7 +162,7 @@ ua_mem_pool_new (uint32_t block_size, uint32_t blocks,
 
   i->curr_e = i->start;
 
-  _ua_mem_pool_element *e = i->start;
+  _mem_pool_element *e = i->start;
   for (int j = 1; j < min; ++j)
     {
       e->next = _elem_new (blocks, block_size);
@@ -175,10 +174,10 @@ ua_mem_pool_new (uint32_t block_size, uint32_t blocks,
 }
 
 void
-ua_mem_pool_destroy (_ua_mem_pool * p)
+mem_pool_destroy (_mem_pool * p)
 {
-  _ua_mem_pool_element *i = p->start;
-  _ua_mem_pool_element *n = NULL;
+  _mem_pool_element *i = p->start;
+  _mem_pool_element *n = NULL;
 
   for (; NULL != i; i = n)
     {
@@ -190,23 +189,23 @@ ua_mem_pool_destroy (_ua_mem_pool * p)
 }
 
 int
-ua_mem_pool_is_empty (_ua_mem_pool * p)
+mem_pool_is_empty (_mem_pool * p)
 {
-  _ua_mem_pool_element *i = p->start;
-  _ua_mem_pool_element *n = NULL;
+  _mem_pool_element *i = p->start;
+  _mem_pool_element *n = NULL;
 
   for (; NULL != i; i = n)
     {
       n = i->next;
       if (!_elem_is_empty (i))
-        return 0;
+	return 0;
     }
 
   return 1;
 }
 
 void *
-ua_mem_pool_alloc (_ua_mem_pool * p, uint32_t * size)
+mem_pool_alloc (_mem_pool * p, uint32_t * size)
 {
   assert (p);
 
@@ -215,17 +214,17 @@ ua_mem_pool_alloc (_ua_mem_pool * p, uint32_t * size)
   while (NULL == (target = _elem_alloc (p->curr_e)))
     {
       if (NULL == p->curr_e->next)
-        break;
+	break;
       p->curr_e = p->curr_e->next;
     }
 
   if (!target)
     {
       if (p->limit)
-        {
-          if (p->length == p->max_elements)
-            return NULL;
-        }
+	{
+	  if (p->length == p->max_elements)
+	    return NULL;
+	}
       p->curr_e->next = _elem_new (p->num_block, p->block_size);
       ++p->length;
       p->curr_e = p->curr_e->next;
@@ -239,15 +238,15 @@ ua_mem_pool_alloc (_ua_mem_pool * p, uint32_t * size)
 }
 
 void
-ua_mem_pool_free (_ua_mem_pool * p, void *t)
+mem_pool_free (_mem_pool * p, void *t)
 {
-  _ua_mem_pool_element *e = p->start;
+  _mem_pool_element *e = p->start;
 
   int i = 0;
   while (e)
     {
       if ((i = _elem_free (e, (char *) t)))
-        break;
+	break;
       e = e->next;
     }
   assert (i);

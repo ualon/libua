@@ -18,28 +18,28 @@
 
 #include <stdint.h>
 
-#define UA_BLOCK_RING_BUFFER_PROTECT_AREA_PERCENT  (30)
+#define BLOCK_RING_BUFFER_PROTECT_AREA_PERCENT  (30)
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-  typedef struct _ua_block_ring_buffer *ua_block_ring_buffer_t;
+  typedef struct _block_ring_buffer *block_ring_buffer_t;
 
-  ua_block_ring_buffer_t ua_block_ring_buffer_new (const uint32_t block_count,
-						   const uint32_t block_size);
-  void ua_block_ring_buffer_destory (ua_block_ring_buffer_t buf);
-  void ua_block_ring_buffer_clear (ua_block_ring_buffer_t buf);
-  uint32_t ua_block_ring_buffer_dump (ua_block_ring_buffer_t buf, char *t);
+  block_ring_buffer_t block_ring_buffer_new (const uint32_t block_count,
+                                             const uint32_t block_size);
+  void block_ring_buffer_destory (block_ring_buffer_t buf);
+  void block_ring_buffer_clear (block_ring_buffer_t buf);
+  uint32_t block_ring_buffer_dump (block_ring_buffer_t buf, char *t);
 
-  uint32_t ua_block_ring_buffer_write (ua_block_ring_buffer_t buf, char *block,
-				       uint32_t count);
-  int ua_block_ring_buffer_read (const ua_block_ring_buffer_t buf, char *block,
-				 const uint32_t index);
-  uint32_t ua_block_ring_buffer_read_last (const ua_block_ring_buffer_t buf,
-					   char *block);
-  uint32_t ua_block_ring_buffer_last_index (const ua_block_ring_buffer_t buf);
+  uint32_t block_ring_buffer_write (block_ring_buffer_t buf, char *block,
+                                    uint32_t count);
+  int block_ring_buffer_read (const block_ring_buffer_t buf, char *block,
+                              const uint32_t index);
+  uint32_t block_ring_buffer_read_last (const block_ring_buffer_t buf,
+                                        char *block);
+  uint32_t block_ring_buffer_last_index (const block_ring_buffer_t buf);
 
 #ifdef __cplusplus
 }
