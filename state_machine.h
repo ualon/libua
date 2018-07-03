@@ -20,7 +20,7 @@
 
 /*
  * default not with mutex(pmutex),
- * if need it, define CA_STATE_MACHINE_WITH_MUTEX
+ * if need it, define STATE_MACHINE_WITH_MUTEX
  */
 
 #ifdef __cplusplus

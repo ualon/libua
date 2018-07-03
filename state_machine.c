@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#ifdef CA_STATE_MACHINE_WITH_MUTEX
+#ifdef STATE_MACHINE_WITH_MUTEX
 #include <pthread.h>
 #endif
 
@@ -31,7 +31,7 @@ typedef struct _state_machine
   void *arr_func[(_state_num_ - 1) * 2];
   void *arr_para[(_state_num_ - 1) * 2];
 
-#ifdef CA_STATE_MACHINE_WITH_MUTEX
+#ifdef STATE_MACHINE_WITH_MUTEX
   pthread_mutex_t *_pMutex;
   pthread_mutexattr_t *_pMutexAttr;
 #endif
@@ -44,7 +44,7 @@ state_machine_new (void)
   if (!i)
     return NULL;
 
-#ifdef CA_STATE_MACHINE_WITH_MUTEX
+#ifdef STATE_MACHINE_WITH_MUTEX
   i->_pMutex = (pthread_mutex_t *) malloc (sizeof (pthread_mutex_t));
   if (!i->_pMutex)
     {
@@ -79,7 +79,7 @@ state_machine_new (void)
 void
 state_machine_destory (_state_machine * sm)
 {
-#ifdef CA_STATE_MACHINE_WITH_MUTEX
+#ifdef STATE_MACHINE_WITH_MUTEX
   pthread_mutex_destroy (sm->_pMutex);
   free (sm->_pMutexAttr);
   free (sm->_pMutex);
@@ -145,7 +145,7 @@ state_machine_do_change (_state_machine * sm, state_e from, state_e to)
   int dif = to - from;
   int cur;
 
-#ifdef CA_STATE_MACHINE_WITH_MUTEX
+#ifdef STATE_MACHINE_WITH_MUTEX
   pthread_mutex_lock (sm->_pMutex);
 #endif
   if (dif > 0)
@@ -190,7 +190,7 @@ state_machine_do_change (_state_machine * sm, state_e from, state_e to)
 
 err:
 
-#ifdef CA_STATE_MACHINE_WITH_MUTEX
+#ifdef STATE_MACHINE_WITH_MUTEX
   pthread_mutex_unlock (sm->_pMutex);
 #endif
 
